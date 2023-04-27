@@ -1,0 +1,14 @@
+html {
+    background: url("../static/images/background.png");
+    min-height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
