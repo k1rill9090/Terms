@@ -34,15 +34,7 @@ input[type="text"] {
     outline: 0;
     box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.25);
   }
-  
-  /* обводка поля для валидации + красный текст */
-.error {
-    border: 2px solid #ff0000 !important;
-}
-.error:focus{
-    outline: none;
-    box-shadow: none;
-}
+
 @media (max-width: 980px) {
     .text_field__input {
         padding: 1% 1%;

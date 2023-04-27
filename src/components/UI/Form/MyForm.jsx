@@ -1,8 +1,8 @@
 import Myinput from '../MyInput/MyInput'
 import classes from './Form.module.css'
 import MyButton from '../MyButton/MyButton'
-// импортируем стили из инпута для изменения обводки инпута при валидации
-import inputStyles from '../MyInput/MyInput.module.css'
+// импортируем стили для изменения обводки инпута при валидации
+import errStyles from './errStyles.module.css'
 
 const MyForm = (props) => {
 
@@ -10,14 +10,14 @@ const MyForm = (props) => {
   const validate = (event) => {
     if ( !(event.target.value >= 1 && event.target.value <= 100)) {
       console.log("Число ЗА ПРЕДЕЛАМИ ДИАПАЗОНА")
-      event.target.classList.add(inputStyles.error)
+      event.target.classList.add(errStyles.error)
 
     }
     else {
       console.log("число в диапазоне от 0 до 100")
       // проверка на наличие класса error у инпута, если есть, удалить (убрать красную обводку). 
       // нужна так как изменение значения может быть в корректном диапазоне, а удалить несуществующий класс нельзя
-      event.target.classList.contains(inputStyles.error) ? event.target.classList.remove(inputStyles.error) : console.log('ok')
+      event.target.classList.contains(errStyles.error) ? event.target.classList.remove(errStyles.error) : console.log('ok')
     } 
     
     
