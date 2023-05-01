@@ -46,16 +46,28 @@ const MyForm = (props) => {
   const validate_min_date = (event) => {
     // если ошибка валидации на минимальную дату
     if ( !(event.target.value !== "" && new Date(event.target.value) > new Date("1800-01-01")) ) {
+      if ( new Date(event.target.value) <= new Date(document.getElementById('max_date').value) ) {
+        document.getElementById('max_date').classList.remove(errStyles.error)
+        setLabelDateErrEnd('')
+      }
       setLabelDateErrStart('Введите дату не ранее 01.01.1800') 
       event.target.classList.add(errStyles.error)
     }
     
     else if (document.getElementById('max_date').value === '') {
+      if ( event.target.value !== '') {
+        document.getElementById('min_date').classList.remove(errStyles.error)
+        setLabelDateErrStart('')
+      }
       setLabelDateErrEnd('Введите дату окончания') 
       document.getElementById('max_date').classList.add(errStyles.error)
     }
 
     else if (new Date(event.target.value) > new Date(document.getElementById('max_date').value) ) {
+      if (new Date(event.target.value) > new Date("1800-01-01")) {
+        document.getElementById('min_date').classList.remove(errStyles.error)
+        setLabelDateErrStart('')
+      }
       setLabelDateErrEnd('Дата окончания не может быть меньше даты начала!')
       document.getElementById('max_date').classList.add(errStyles.error)
     }
@@ -81,6 +93,10 @@ const MyForm = (props) => {
     }
 
     else if (document.getElementById('min_date').value === '') {
+      if ( event.target.value !== '' ) {
+        document.getElementById('max_date').classList.remove(errStyles.error)
+        setLabelDateErrEnd('')
+      }
       // labelDateMin = 'Введите дату начала'
       document.getElementById('min_date').classList.add(errStyles.error)
       setLabelDateErrStart('Введите дату начала')
