@@ -4,6 +4,11 @@ input[type="text"] {
     margin: 0; /* 2 */
 }
 
+.text_field__input[readonly] {
+    background-color: #dad9d9;
+    opacity: 1;
+}
+
 /* стили для input */
 .text_field__input {
     width: 100%;

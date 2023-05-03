@@ -5,8 +5,16 @@ import MyButton from '../MyButton/MyButton'
 import errStyles from './errStyles.module.css'
 import Mylabel from './Mylabel'
 import { useState } from 'react'
+import axios from 'axios'
+import ModalLoader from '../ModalLoader/ModalLoader'
+import Loader from '../Loader/Loader'
 
 const MyForm = (props) => {
+
+  // состояние для модалки
+  const [modal, setModal] = useState(false)
+
+
   // состояния для лейблов с ошибкой
   const [checkNum, setCheckNum] = useState('')
   const [checkWords, setCheckWords] = useState('')
@@ -63,9 +71,18 @@ const MyForm = (props) => {
         setLabelDateErrEnd('')
         isMaxDateErr = false
       }
-      setLabelDateErrStart('Введите дату не ранее 01.01.1800') 
-      event.classList.add(errStyles.error)
-      isMinDateErr = true
+
+      if(event.value === '') {
+        setLabelDateErrStart('Введите дату начала') 
+        event.classList.add(errStyles.error)
+        isMinDateErr = true
+      }
+      else if (new Date(event.value) <= new Date("1800-01-01")) {
+        setLabelDateErrStart('Введите дату не ранее 01.01.1800') 
+        event.classList.add(errStyles.error)
+        isMinDateErr = true
+      }
+      
     }
     
     // также костыль с проверкой max_date
@@ -109,9 +126,16 @@ const MyForm = (props) => {
 
   const validate_max_date = (event) => {
     if ( !(event.value !== "" && new Date(event.value) > new Date("1800-01-01")) ) {
-      setLabelDateErrEnd('Введите дату не ранее 01.01.1800')
-      event.classList.add(errStyles.error)
-      isMaxDateErr = true
+      if(event.value === '') {
+        setLabelDateErrEnd('Введите дату окончания') 
+        event.classList.add(errStyles.error)
+        isMaxDateErr = true
+      }
+      else if (new Date(event.value) <= new Date("1800-01-01")) {
+        setLabelDateErrEnd('Введите дату не ранее 01.01.1800') 
+        event.classList.add(errStyles.error)
+        isMaxDateErr = true
+      }
     }
 
     // также костыль с проверкой на min_date
@@ -143,24 +167,47 @@ const MyForm = (props) => {
 
   }
 
-  const postForm = (a) => {
+  const postForm = async (a) => {
     // предотвратить обновление страницы при нажатии на кнопку
     a.preventDefault()
+
+    // проверить финально поля на валидацию
     validate_num(document.getElementById('num'))
     validate_words(document.getElementById('words'))
     validate_min_date(document.getElementById('min_date'))
     validate_max_date(document.getElementById('max_date'))
 
+    // если валидация пропускает (стоит инверсия, так как false означает отсутствие валидации)
     if (!isNumErr && !isWordErr && !isMinDateErr && !isMaxDateErr) {
-      alert('Все поля заполнены корректно, можно отправлять запрос!')
+      // let num = document.getElementById('num')
+      // let words = document.getElementById('words')
+      // let min_date = document.getElementById('min_date')
+      // let max_date = document.getElementById('max_date')
+
+      // document.getElementById('num').setAttribute("readonly", "")
+      // document.getElementById('words').setAttribute("readonly", "")
+      // document.getElementById('min_date').setAttribute("readonly", "")
+      // document.getElementById('max_date').setAttribute("readonly", "")
+      
+      setModal(true)
+      setTimeout( async () => {
+        const resp = await axios.get('http://jsonplaceholder.typicode.com/posts')
+        // console.log(resp.data)
+        setModal(false)
+      }, 2000);
+    
 
     }
-
-    
   }
 
   return (
+    
     <div style={{marginTop: '60px'}}>
+      <ModalLoader visible={modal} setVisible={setModal}>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <Loader/>
+        </div>
+      </ModalLoader>
       <form className={classes.pos}>
         <div className={classes.space}>
             <h1 className={classes.h}>Формирование корпуса текстов</h1>
@@ -200,7 +247,7 @@ const MyForm = (props) => {
             </div>
 
             <div className={classes.lb_in}>
-              <MyButton  onClick={postForm}>Найти термины</MyButton>
+              <MyButton onClick={postForm}>Найти термины</MyButton>
             </div>
             
           </div>

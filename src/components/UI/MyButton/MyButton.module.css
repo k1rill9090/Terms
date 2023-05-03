@@ -21,3 +21,9 @@
   .btn:hover {
   background-color: #dcd9d99b;
 }
+
+@media(max-width: 980px) {
+  .btn {
+    margin-bottom: 50px;
+  }
+}

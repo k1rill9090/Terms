@@ -1,0 +1,23 @@
+.modal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* свойства для всего что внутри модалки */
+.modalContent {
+    padding: 25px;
+    background: rgb(240, 239, 239);
+    border-radius: 10px;
+    min-width: 250px;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
