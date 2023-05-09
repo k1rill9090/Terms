@@ -1,6 +1,17 @@
+@font-face {
+    font-family: "plumb";
+    src: url("../static/fonts/ofont.ru_Plumb.ttf") format("truetype");
+    }
+
+@font-face {
+    font-family: "golos-text";
+    src: url("../static/fonts/golos-text_regular.woff2") format("woff2");
+  }
+
+
+
 html {
     background: url("../static/images/background.png");
-    min-height: 100%;
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;

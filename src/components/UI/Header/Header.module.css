@@ -1,7 +1,3 @@
-@font-face {
-  font-family: "golos-text";
-  src: url("../../../static/fonts/golos-text_regular.woff2") format("woff2");
-}
 
 /* отдельно для текста шапки */
 .h {

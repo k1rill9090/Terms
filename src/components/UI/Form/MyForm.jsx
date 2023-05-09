@@ -9,7 +9,7 @@ import axios from 'axios'
 import ModalLoader from '../ModalLoader/ModalLoader'
 import Loader from '../Loader/Loader'
 
-const MyForm = (props) => {
+const MyForm = ({getNumPage}) => {
 
   // состояние для модалки
   const [modal, setModal] = useState(false)
@@ -194,8 +194,9 @@ const MyForm = (props) => {
         const resp = await axios.get('http://jsonplaceholder.typicode.com/posts')
         // console.log(resp.data)
         setModal(false)
+        getNumPage(1, resp.data) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
       }, 2000);
-    
+      
 
     }
   }
