@@ -8,12 +8,15 @@ import { useState } from 'react'
 import axios from 'axios'
 import ModalLoader from '../ModalLoader/ModalLoader'
 import Loader from '../Loader/Loader'
+import ErrNotification from '../ErrNotification/ErrNotification'
 
 const MyForm = ({getNumPage}) => {
 
   // состояние для модалки
   const [modal, setModal] = useState(false)
 
+  // cостояние для уведомления с ошибкой
+  const [note, setNote] = useState(false)
 
   // состояния для лейблов с ошибкой
   const [checkNum, setCheckNum] = useState('')
@@ -179,10 +182,10 @@ const MyForm = ({getNumPage}) => {
 
     // если валидация пропускает (стоит инверсия, так как false означает отсутствие валидации)
     if (!isNumErr && !isWordErr && !isMinDateErr && !isMaxDateErr) {
-      // let num = document.getElementById('num')
-      // let words = document.getElementById('words')
-      // let min_date = document.getElementById('min_date')
-      // let max_date = document.getElementById('max_date')
+      let num = document.getElementById('num').value
+      let words = document.getElementById('words').value
+      let min_date = document.getElementById('min_date').value
+      let max_date = document.getElementById('max_date').value
 
       // document.getElementById('num').setAttribute("readonly", "")
       // document.getElementById('words').setAttribute("readonly", "")
@@ -190,13 +193,33 @@ const MyForm = ({getNumPage}) => {
       // document.getElementById('max_date').setAttribute("readonly", "")
       
       setModal(true)
-      setTimeout( async () => {
-        const resp = await axios.get('http://jsonplaceholder.typicode.com/posts')
-        // console.log(resp.data)
+      try {
+        const resp = await axios.post('http://127.0.0.1:5000/articles', {
+          data: {
+            num: num,
+            words: words,
+            min_date: min_date,
+            max_date: max_date
+          }
+        })
+        console.log(resp.status)
+        const respGet = await axios.get('http://127.0.0.1:5000/articles', {
+          params: {
+            limit: 1,
+            offset: 0
+          }
+        })
+        console.log(respGet.data)
         setModal(false)
-        getNumPage(1, resp.data) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
-      }, 2000);
-      
+        getNumPage(1, respGet.data) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
+      } catch(err) {
+        setModal(false)
+        setNote(true)
+        setTimeout(() => {
+          setNote(false)
+        }, 5000);
+        
+      }    
 
     }
   }
@@ -209,6 +232,7 @@ const MyForm = ({getNumPage}) => {
           <Loader/>
         </div>
       </ModalLoader>
+      <ErrNotification visible={note} setVisible={setNote}/>
       <form className={classes.pos}>
         <div className={classes.space}>
             <h1 className={classes.h}>Формирование корпуса текстов</h1>

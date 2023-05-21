@@ -10,19 +10,44 @@ const HighlightTerms = ({getNumPage, articles}) => {
   // состояние для модалки
   const [modal, setModal] = useState(false)
 
-  const article = useState(articles)
+  const [article, setArticle] = useState(articles)
+  const [offset, setOffset] = useState(0)
 
   const findTerms = async (event) => {
     event.preventDefault()
-    
     setModal(true)
     setTimeout( async () => {
       await axios.get('http://jsonplaceholder.typicode.com/posts')
-      console.log(article)
       setModal(false)
       getNumPage(2) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
     }, 2000);
   }
+
+  const nextPage = async (event) => {
+    event.preventDefault()
+    const resp = await axios.get("http://127.0.0.1:5000/articles", {
+      params: {
+        limit: 1,
+        offset: offset <= articles.meta.count ? offset+1 : offset
+      }
+    })
+    setArticle(resp.data)
+    if (offset < articles.meta.count-2) setOffset(offset+1)
+    
+  } 
+
+  const prevPage = async (event) => {
+    event.preventDefault()
+    
+    const resp = await axios.get("http://127.0.0.1:5000/articles", {
+      params: {
+        limit: 1,
+        offset: offset > 0 ? offset-1 : offset
+      }
+    })
+    setArticle(resp.data)
+    if (offset > 0) setOffset(offset-1)
+  } 
   
   return (
     <div>
@@ -43,9 +68,17 @@ const HighlightTerms = ({getNumPage, articles}) => {
         </div>
         <div className={styles.text}>
            <h3 style={{fontFamily: 'golos-text'}}>Выгруженные статьи</h3><br/><br/>
-            {article[0].map(art => <div>{art.title}</div>
+            {article.data.map((art) => 
+              <div key={art.id}>
+              <br/><br/><div><h5>{art.title}</h5></div><br/><br/><br/>
+                <div>{art.article}</div>
+              </div>
               
             )}
+        </div>
+        <div style={{marginBottom: '40px'}}>
+          <button onClick={prevPage}>Пред</button>
+          <button onClick={nextPage}>След</button>
         </div>
       </div>      
     </div>

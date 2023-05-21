@@ -12,6 +12,7 @@ function App() {
     const [resp_form, setRespForm] = useState(null)
 
     // получить значение от дочернего компонента для отрисовки конкретного компонента
+    // numPage - целое число, resp - объекты от get метода /articles
     const getPage = (numPage, resp) => {
         setPage(numPage)
         setRespForm(resp)
