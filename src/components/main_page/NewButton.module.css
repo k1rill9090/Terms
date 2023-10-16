@@ -1,0 +1,23 @@
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.btn {
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    padding: 15px;
+    border-radius: 10px;
+    
+  }
+.btn:hover {
+    background-color: rgba(0, 63, 99, 0.14);
+  }

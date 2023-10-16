@@ -11,9 +11,6 @@
 
 
 html {
-    background: url("../static/images/background.png");
-    background-repeat: no-repeat;
-    background-size: cover;
     min-height: 100vh;
 }
 
