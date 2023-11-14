@@ -48,3 +48,11 @@
     background-color: rgba(0, 63, 99, 0.14);
     border-radius: 7px;
 }
+
+.no_data {
+    padding-top: 50px;
+    padding-bottom: 100px;
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+}

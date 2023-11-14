@@ -21,3 +21,6 @@ button {
 .btn:hover {
     background-color: rgba(0, 63, 99, 0.14);
   }
+  .btn:focus {
+    background-color: rgba(0, 63, 99, 0.14);
+  }
