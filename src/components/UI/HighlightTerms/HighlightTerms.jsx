@@ -5,6 +5,8 @@ import BackButton from '../BackButton/BackButton'
 import ModalLoader from '../ModalLoader/ModalLoader'
 import Loader from '../Loader/Loader'
 import axios from 'axios'
+import { backend_url } from '../../../index.js';
+
 
 const HighlightTerms = ({getNumPage, articles}) => {
   // состояние для модалки
@@ -25,7 +27,7 @@ const HighlightTerms = ({getNumPage, articles}) => {
 
   const nextPage = async (event) => {
     event.preventDefault()
-    const resp = await axios.get("http://127.0.0.1:5000/articles", {
+    const resp = await axios.get(backend_url+"/articles", {
       params: {
         limit: 1,
         offset: offset <= articles.meta.count ? offset+1 : offset
@@ -39,7 +41,7 @@ const HighlightTerms = ({getNumPage, articles}) => {
   const prevPage = async (event) => {
     event.preventDefault()
     
-    const resp = await axios.get("http://127.0.0.1:5000/articles", {
+    const resp = await axios.get(backend_url+"/articles", {
       params: {
         limit: 1,
         offset: offset > 0 ? offset-1 : offset
@@ -66,7 +68,7 @@ const HighlightTerms = ({getNumPage, articles}) => {
           <h1 className={styles.h}>Выделение терминов</h1>
           <MyButton onClick={findTerms}>Выделить термины</MyButton>
         </div>
-        <div className={styles.text}>
+        {/* <div className={styles.text}>
            <h3 style={{fontFamily: 'golos-text'}}>Выгруженные статьи</h3><br/><br/>
             {article.data.map((art) => 
               <div key={art.id}>
@@ -79,7 +81,7 @@ const HighlightTerms = ({getNumPage, articles}) => {
         <div style={{marginBottom: '40px'}}>
           <button onClick={prevPage}>Пред</button>
           <button onClick={nextPage}>След</button>
-        </div>
+        </div> */}
       </div>      
     </div>
   )

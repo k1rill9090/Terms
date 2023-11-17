@@ -9,6 +9,7 @@ import axios from 'axios'
 import ModalLoader from '../ModalLoader/ModalLoader'
 import Loader from '../Loader/Loader'
 import ErrNotification from '../ErrNotification/ErrNotification'
+import { backend_url } from '../../../index.js';
 
 const MyForm = ({getNumPage}) => {
 
@@ -51,9 +52,10 @@ const MyForm = ({getNumPage}) => {
 
   // валидация для текстового инпута на наличие только букв и не более 3-х слов
   const validate_words = (event) => {
-    if ( !(event.value !== "" && /^[a-zA-Z\s]+$/g.test(event.value) && event.value.split(" ").length <= 3)) {
+    // if ( !(event.value !== "" && /^[a-zA-Z\s]+$/g.test(event.value) && event.value.split(" ").length <= 3)) {
+    if ( !(event.value !== "" && /^[a-zA-Z\s\d-]+$/g.test(event.value))) {
       event.classList.add(errStyles.error)
-      setCheckWords('Введите не более 3 слов через пробел, состоящих только из английских букв')
+      setCheckWords('Допускаются слова, разделенные пробелом и содержащие английские символы, цифры и тире')
       isWordErr = true
     }
     else {
@@ -194,7 +196,7 @@ const MyForm = ({getNumPage}) => {
       
       setModal(true)
       try {
-        const resp = await axios.post('http://127.0.0.1:5000/articles', {
+        const resp = await axios.post(backend_url+'/articles', {
           data: {
             num: num,
             words: words,
@@ -203,7 +205,7 @@ const MyForm = ({getNumPage}) => {
           }
         })
         console.log(resp.status)
-        const respGet = await axios.get('http://127.0.0.1:5000/articles', {
+        const respGet = await axios.get(backend_url+'/articles', {
           params: {
             limit: 1,
             offset: 0
@@ -213,6 +215,7 @@ const MyForm = ({getNumPage}) => {
         setModal(false)
         getNumPage(1, respGet.data) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
       } catch(err) {
+        console.log(err)
         setModal(false)
         setNote(true)
         setTimeout(() => {
@@ -229,13 +232,13 @@ const MyForm = ({getNumPage}) => {
     <div style={{marginTop: '60px'}}>
       <ModalLoader visible={modal} setVisible={setModal}>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Loader/>
+          <Loader msgText='Подождите, идет загрузка'/>
         </div>
       </ModalLoader>
-      <ErrNotification visible={note} setVisible={setNote}/>
+      <ErrNotification visible={note} setVisible={setNote} msgText='Не удалось загрузить данные'/>
       <form className={classes.pos}>
         <div className={classes.space}>
-            <h1 className={classes.h}>Формирование корпуса текстов</h1>
+            <p className={classes.h}>Формирование корпуса текстов</p>
             <div className={classes.lb_in}>
               <label className={classes.lb}>Количество статей</label>
               <div style={{width: '100%', textAlign: 'center'}}>
@@ -248,7 +251,7 @@ const MyForm = ({getNumPage}) => {
             <div className={classes.lb_in}>
               <label className={classes.lb}>Поисковая строка</label>
               <div style={{width: '100%', textAlign: 'center'}}>
-                <Myinput id='words' placeholder={"Введите слова через пробел"} type={'text'} onChange={event => validate_words(event.target)}/>
+                <Myinput id='words' placeholder={"Введите ключевые слова"} type={'text'} onChange={event => validate_words(event.target)}/>
                 <Mylabel>{checkWords}</Mylabel>
               </div>
             </div>
@@ -272,7 +275,7 @@ const MyForm = ({getNumPage}) => {
             </div>
 
             <div className={classes.lb_in}>
-              <MyButton onClick={postForm}>Найти термины</MyButton>
+              <MyButton onClick={postForm}>Загрузить абстракты</MyButton>
             </div>
             
           </div>

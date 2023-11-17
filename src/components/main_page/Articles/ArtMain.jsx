@@ -46,7 +46,7 @@ const ArtMain = () => {
         }
       }
       );
-      console.log("Статус: "+response)
+      // console.log("Статус: "+response)
       setPostsLoading(false);
       
       setTitle(response.data.data[0])
@@ -54,13 +54,13 @@ const ArtMain = () => {
       setTotalArt(response.data.meta.total_count)
     }
     catch (error) {
-      console.log('Ошибка: ', error.message);
+      // console.log('Ошибка: ', error.message);
       setPostsLoading(false);
       setNote(true);
       setTimeout(() => {
         setNote(false)
       }, 5000);
-      setTotalArt([])
+      setTotalArt(0)
     }
   }
 
@@ -84,7 +84,7 @@ const ArtMain = () => {
             <span className={styles.elems} style={{fontSize: '20px', marginTop: '1.5%', marginBottom: '1.5%'}}>Список статей</span>
         </div>
         <hr style={{borderTop: '1px solid #003F63'}}/>
-        <ErrNotification visible={note} setVisible={setNote}/>      
+        <ErrNotification visible={note} setVisible={setNote} msgText='Не удалось загрузить данные'/>      
         
         {isPostsLoading //добавить анимацию загрузки во время загрузки постов через апи
         
@@ -92,7 +92,7 @@ const ArtMain = () => {
         
                 
         : <div>
-            {totalArt.length === 0 //проверка на наличие записей, если их нет, выводить соответствующий текст
+            {totalArt === 0 //проверка на наличие записей, если их нет, выводить соответствующий текст
             ? 
             
             <div className={styles.no_data}>

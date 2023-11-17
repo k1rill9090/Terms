@@ -10,7 +10,7 @@
 
 /* свойства для всего что внутри модалки */
 .modalContent {
-    padding: 25px;
+    padding: 5px;
     background: rgb(240, 239, 239);
     border-radius: 10px;
     min-width: 250px;

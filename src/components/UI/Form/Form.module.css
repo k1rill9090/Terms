@@ -2,12 +2,15 @@
 .pos {
     display: flex;
     border: 1.5px solid black;
+    border-radius: 34px;
 
     max-width: 700px;
     margin: auto;
+    margin-bottom: 100px;
     justify-content: center;
     align-items: center;
     background-color: rgba(27, 80, 113, 0.21);
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.649);
 }
 
 /* для div, внутри которого инпуты */
@@ -22,15 +25,15 @@
 
 /* для подзаголовка внутри формы */
 .h {
-    font-family: 'golos-text';
+    font-family: sans-serif;
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
 /* для лейблов */
 .lb {
     font-family: 'golos-text';
-    font-size: 1.05rem;
+    font-size: 0.9rem;
 }
 
 /* для div c лейблом и инпутом */

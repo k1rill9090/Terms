@@ -1,9 +1,8 @@
 import './styles/App.css';
 import React, { useState } from 'react'
-import Header from './components/UI/Header/Header';
 import MyForm from './components/UI/Form/MyForm';
-import HighlightTerms from './components/UI/HighlightTerms/HighlightTerms';
 import Statistics from './components/UI/Statistics/Statistics';
+import ArtsLoadingResult from './components/UI/ArtsLoadingResult/ArtsLoadingResult';
 
 
 function App() {
@@ -20,7 +19,7 @@ function App() {
     
     return (
         <div>
-            <Header/>
+            {/* <Header/> */}
             {/* функция немедленного вызова. синтаксис: (func)(). в первых скобках содержимое функции, вторые означают выполнить сейчас. */}
             {(() => {
                 switch (page) {
@@ -30,7 +29,9 @@ function App() {
                         )
                     case 1:
                         return (
-                            <HighlightTerms getNumPage={getPage} articles={resp_form}/>
+                            /* костыль для отображения результата загрузки абстрактов. 
+                            Раньше этот компонент вызывал все методы по отдельности(это делает код ниже) */
+                            <ArtsLoadingResult />
                         )
                     case 2:
                     return (
