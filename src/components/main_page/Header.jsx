@@ -43,7 +43,7 @@ function Header() {
       // a.preventDefault()      
       setModal(true)
       try {
-          const resp = await axios.delete(backend_url+'/clearPubmedArticles');
+          const resp = await axios.delete(backend_url+'/clearPubmedArticles', {headers: {'ngrok-skip-browser-warning': true}});
           // console.log("Метод delete. Статус = "+resp.status);
           setTimeout(() => {setModal(false)}, 2000);
           setTimeout(() => {setNoteAccess(true)}, 2000);

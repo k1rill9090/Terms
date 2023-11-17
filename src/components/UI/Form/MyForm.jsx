@@ -203,9 +203,12 @@ const MyForm = ({getNumPage}) => {
             min_date: min_date,
             max_date: max_date
           }
-        })
+        }, {headers: {'ngrok-skip-browser-warning': true}})
         console.log(resp.status)
         const respGet = await axios.get(backend_url+'/articles', {
+          headers: {
+            'ngrok-skip-browser-warning': true
+          },
           params: {
             limit: 1,
             offset: 0
