@@ -204,6 +204,8 @@ const MyForm = ({getNumPage}) => {
             max_date: max_date
           }
         }, {headers: {'ngrok-skip-browser-warning': true}})
+
+        
         console.log(resp.status)
         const respGet = await axios.get(backend_url+'/articles', {
           headers: {
@@ -216,7 +218,7 @@ const MyForm = ({getNumPage}) => {
         })
         console.log(respGet.data)
         setModal(false)
-        getNumPage(1, respGet.data) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
+        getNumPage(1) // отправить значение к родителю (в app.js) для переключения формы на другой компонент
       } catch(err) {
         console.log(err)
         setModal(false)

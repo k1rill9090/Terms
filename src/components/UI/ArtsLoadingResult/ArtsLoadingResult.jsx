@@ -4,6 +4,13 @@ import styles from './ArtsLoadingResult.module.css'
 import NewButton from '../../main_page/NewButton'
 
 const ArtsLoadingResult = () => {
+
+  const changePage = () => {
+    const articlesPage = window.location.href.replace('form', 'articles')
+    window.location.replace(articlesPage)
+  }
+
+
   return (
     <div className={styles.mainy}>
         <div className={styles.main}>
@@ -14,7 +21,7 @@ const ArtsLoadingResult = () => {
             <div>
                 <p style={{textAlign: 'center'}}>Абстракты загружены!</p>
                 <div className={styles.btn}>
-                    <NewButton to='/articles'>Посмотреть список абстрактов</NewButton>
+                    <NewButton onClick={changePage}>Посмотреть список абстрактов</NewButton>
                 </div>
             </div>
         </div>

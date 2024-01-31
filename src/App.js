@@ -5,19 +5,20 @@ import About from './pages/About/About'
 import Articles from './pages/Articles';
 import Header from './components/main_page/Header';
 // import MyForm from './components/UI/Form/MyForm'
-import App2 from './App2'
-
+import ListOfTerms from './pages/ListOfTerms/ListOfTerms';
+import FormGeneral from './pages/FormGeneral'
 
 
 function App() {
+
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path='/about' element={<About/>}/>
-        <Route path='/articles' element={<Articles/>}/>
-        <Route path='/listTerms' element={<div style={{display: 'flex', justifyContent: 'center'}}>LIST OF TERMS</div>}/>
-        <Route path='/form' element={<App2 />}/>
+        <Route path='/articles' element={<Articles currentUrl={window.location.href}/>}/>
+        <Route path='/listTerms' element={<div className={'barChart'}><ListOfTerms /></div>}/>
+        <Route path='/form' element={<FormGeneral />}/>
         <Route path="*" element={<Navigate to="/articles" replace />} />
       </Routes>
     </BrowserRouter>

@@ -1,20 +1,17 @@
-import './styles/App.css';
+import '../styles/App.css';
 import React, { useState } from 'react'
-import MyForm from './components/UI/Form/MyForm';
-import Statistics from './components/UI/Statistics/Statistics';
-import ArtsLoadingResult from './components/UI/ArtsLoadingResult/ArtsLoadingResult';
+import MyForm from '../components/UI/Form/MyForm';
+import ArtsLoadingResult from '../components/UI/ArtsLoadingResult/ArtsLoadingResult';
 
 
-function App() {
+function FormGeneral() {
     // состояние, определяющее по числу, какой компонент рендерить в switch case
     const [page, setPage] = useState(0)
-    const [resp_form, setRespForm] = useState(null)
 
     // получить значение от дочернего компонента для отрисовки конкретного компонента
-    // numPage - целое число, resp - объекты от get метода /articles
-    const getPage = (numPage, resp) => {
+    // numPage - целое число
+    const getPage = (numPage) => {
         setPage(numPage)
-        setRespForm(resp)
     }
     
     return (
@@ -33,14 +30,6 @@ function App() {
                             Раньше этот компонент вызывал все методы по отдельности(это делает код ниже) */
                             <ArtsLoadingResult />
                         )
-                    case 2:
-                    return (
-                        <Statistics/>
-                    )
-                    case 3:
-                        return (
-                            <h1>переход</h1>
-                        )
                     default:
                         return (
                             <MyForm getNumPage={getPage}/>
@@ -52,4 +41,4 @@ function App() {
     )
 }
 
-export default App
+export default FormGeneral

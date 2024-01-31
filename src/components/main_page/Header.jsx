@@ -12,6 +12,21 @@ import AccessNotification from '../UI/AccessNotification/AccessNotification';
 
 function Header() {
 
+  const def_pages = {articles: false, listTerms: false, form: false, about: false} 
+  const currentPage = window.location.href.split('/') //определить текущий роут для выделения кнопки в хедере
+
+  // логика для выделения активной страницы в хедере (выделение соответствующей кнопки)
+    let trueCount = 0
+    for (const key in Object.keys(def_pages)) {
+      if (Object.keys(def_pages)[key] === currentPage[currentPage.length-1]) {
+        def_pages[Object.keys(def_pages)[key]] = true
+        trueCount = 1
+      }
+    }
+    if (trueCount === 0) {def_pages['articles'] = true}
+  
+  
+  // console.log(def_pages)
   // состояние для модалки
   const [modal, setModal] = useState(false)
   // cостояние для уведомления с ошибкой
@@ -19,7 +34,7 @@ function Header() {
   // cостояние для уведомления об успехе
   const [noteAccess, setNoteAccess] = useState(false)
 
-  const [active, setActive] = useState({arts: true, list: false, load: false, about: false})
+  const [active, setActive] = useState(def_pages)
 
   const handleClick = (e) => {
     
@@ -34,6 +49,7 @@ function Header() {
       }
     
     setActive(dct);
+
   }
 
   // функция по вызову апи удаления постов. Для кнопки удаления.
@@ -43,11 +59,12 @@ function Header() {
       // a.preventDefault()      
       setModal(true)
       try {
-          const resp = await axios.delete(backend_url+'/clearPubmedArticles', {headers: {'ngrok-skip-browser-warning': true}});
+          await axios.delete(backend_url+'/clearPubmedArticles', {headers: {'ngrok-skip-browser-warning': true}});
           // console.log("Метод delete. Статус = "+resp.status);
           setTimeout(() => {setModal(false)}, 2000);
           setTimeout(() => {setNoteAccess(true)}, 2000);
           setTimeout(() => {setNoteAccess(false)}, 5000);
+          
       } catch(err) {
           console.log(err)
           setModal(false)
@@ -68,18 +85,18 @@ function Header() {
         <div className={styles.main}>
           <Logo/>
 
-            <div className={active.arts ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
-            <NewButton id='arts' to='/articles' onClick={handleClick}>
+            <div className={active.articles ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
+            <NewButton id='articles' to='/articles' onClick={handleClick}>
               Список статей
             </NewButton>
             </div>
 
-            <div className={active.list ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
-            <NewButton id='list' to='/listTerms' onClick={handleClick}>список терминов</NewButton>
+            <div className={active.listTerms ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
+            <NewButton id='listTerms' to='/listTerms' onClick={handleClick}>список терминов</NewButton>
             </div>
 
-            <div className={active.load ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
-            <NewButton id='load' to='/form' onClick={handleClick}>
+            <div className={active.form ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
+            <NewButton id='form' to='/form' onClick={handleClick}>
               Загрузить статьи
             </NewButton>
             </div>
