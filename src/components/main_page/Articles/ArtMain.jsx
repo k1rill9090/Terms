@@ -20,7 +20,7 @@ const ArtMain = () => {
   const [title, setTitle] = useState([])
   const [article, setArticle] = useState([])
   const [totalArt, setTotalArt] = useState(0)
-  const [limit, setLimit] = useState(1)
+  const limit = useState(1)
   const [offset, setOffset] = useState(0)
   const [isPostsLoading, setPostsLoading] = useState(false)
   const [note, setNote] = useState(false) // cостояние для уведомления с ошибкой
@@ -29,8 +29,8 @@ const ArtMain = () => {
 // В данном случае он вызывает api для получения списка статей при начале работы компонента (т.е. при загрузке страницы)
   useEffect( () => {
     // console.log('USE EFFECT')
-    getArticles(limit, offset)
-  }, [])
+    getArticles(limit[0], offset)
+  }, []) //пустой массив нужен чтобы вызов функции происходил только один раз, при запуске страницы, иначе функция будет выполняться бесконечно
 
 
   async function getArticles(limit = 10, offset = 0) {
@@ -106,11 +106,20 @@ const ArtMain = () => {
               <Article article={article.article} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
 
               <div className={styles.page__wrapper}>
-                <span className={styles.page} 
-                    onClick={() => changePage(firstLastPages[0] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
-                >
-                {'В начало'}
-                </span>
+
+                {/* если страниц больше 5, то отображать в пагинации кнопку в начало, иначе нет */}
+                {pagesArray.length > 5 
+                
+                  ?
+                  <span className={styles.page} 
+                        onClick={() => changePage(firstLastPages[0] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
+                    >
+                    {'В начало'}
+                  </span>
+                  :
+                  <div />
+                }
+                
 
                 {pagesArray[0] !== firstLastPages[0]
                 ? 
@@ -133,12 +142,19 @@ const ArtMain = () => {
                 :
                 <span></span>
                 }
-
+                
+                {/* если страниц больше 5, то отображать в пагинации кнопку в конец, иначе нет */}
+                {pagesArray.length > 5 
+                
+                ?
                 <span className={styles.page}
                     onClick={() => changePage(firstLastPages[1] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
                 >
                 {'В конец'}
                 </span>
+                :
+                <div />
+                }
       
               </div>
             </div>

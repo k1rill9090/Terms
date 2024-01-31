@@ -8,7 +8,9 @@ const Loader = ({msgText, ...props}) => {
           <div>
             <div className={styles.spinner} />
           </div>
-          <label style={{fontFamily: 'golos-text', fontSize: '0.9rem'}}>{msgText}</label>
+          <div style={{textAlign: "center"}}>
+            <label style={{fontFamily: 'golos-text', fontSize: '0.9rem'}}>{msgText}</label>
+          </div>
         </div>
     </div>
   )

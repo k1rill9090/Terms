@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
+import parse from 'html-react-parser'
 import {Chart} from 'react-google-charts'
 import NewButton from '../../components/main_page/NewButton';
 import style from './ListOfTerms.module.css';
+import axios from 'axios';
+import { backend_url } from '../..';
+import Loader from '../../components/UI/Loader/Loader';
+import ModalLoader from '../../components/UI/ModalLoader/ModalLoader';
 
 
 export const data = [
@@ -21,19 +26,65 @@ export const data = [
   };
 
 const ListOfTerms = () => {
+
+// состояние для лоадера, если true, то появляется элемент компонент данных, если false, то исчезает
+  const [isStatLoading, setStatLoading] = useState(false)
+
+  async function checkStat() {
+  // функция для вызова методов по выделению терминов и расчете статистики
+
+  setStatLoading(true) //запустить компонент загрузки данных
+  try {
+    // вызвать метод POST /terms
+    await axios.post(backend_url+'/terms', {
+      headers: {
+        'ngrok-skip-browser-warning': true
+      },
+    }
+    );
+    await axios.post(backend_url+'/statistics', {
+      headers: {
+        'ngrok-skip-browser-warning': true
+      },
+    }
+    );
+    setStatLoading(false) //убрать компонент загрузки данных
+    console.log("OK")
+    }
+  catch {
+    alert("error")
+  }
+  }
+
+
   return (
     <div>
       <div className={style.elems}>
         <input></input>
-        <NewButton class_new={'listTerms'}>Рассчитать статистику</NewButton>
+        <NewButton class_new={'listTerms'} onClick={checkStat}>Рассчитать статистику</NewButton>
       </div>
-        <Chart
+      <div>
+      <Chart
             chartType="Bar"
             width="800px"
             height="400px"
             data={data}
             options={options}
         />
+      {
+        isStatLoading
+        ?
+        <ModalLoader visible={setStatLoading} setVisible={setStatLoading}>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <Loader msgText={parse("Подождите, идет выделение терминов <br /> и расчет статистики")}/>
+        </div>
+        </ModalLoader>
+        :
+        <div></div>
+
+      }
+      </div>
+        
     </div>
   )
 }
