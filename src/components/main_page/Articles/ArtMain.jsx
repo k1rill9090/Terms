@@ -20,7 +20,7 @@ const ArtMain = () => {
   const [title, setTitle] = useState([])
   const [article, setArticle] = useState([])
   const [totalArt, setTotalArt] = useState(0)
-  const limit = useState(1)
+  const [limit, setLimit] = useState(1)
   const [offset, setOffset] = useState(0)
   const [isPostsLoading, setPostsLoading] = useState(false)
   const [note, setNote] = useState(false) // cостояние для уведомления с ошибкой
@@ -29,11 +29,11 @@ const ArtMain = () => {
 // В данном случае он вызывает api для получения списка статей при начале работы компонента (т.е. при загрузке страницы)
   useEffect( () => {
     // console.log('USE EFFECT')
-    getArticles(limit[0], offset)
+    getArticles(limit, offset)
   }, []) //пустой массив нужен чтобы вызов функции происходил только один раз, при запуске страницы, иначе функция будет выполняться бесконечно
 
 
-  async function getArticles(limit = 10, offset = 0) {
+  async function getArticles(limit, offset = 0) {
     setPostsLoading(true);
     try {
       const response = await axios.get(backend_url+'/articles', {
