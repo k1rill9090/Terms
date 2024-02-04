@@ -7,7 +7,6 @@ import axios from 'axios';
 import { backend_url } from '../..';
 import Loader from '../../components/UI/Loader/Loader';
 import ModalLoader from '../../components/UI/ModalLoader/ModalLoader';
-import Myinput from '../../components/UI/MyInput/MyInput';
 import ErrNotification from '../../components/UI/ErrNotification/ErrNotification';
 import AccessNotification from '../../components/UI/AccessNotification/AccessNotification';
 
@@ -15,26 +14,21 @@ import AccessNotification from '../../components/UI/AccessNotification/AccessNot
 
 
 const ListOfTerms = () => {
-  
-  const data_1 = [
-    ["Year", "Sales", "Expenses", "Profit"],
-    ["2014", 1000, 400, 200],
-    ["2015", 1170, 460, 250],
-    ["2016", 660, 1120, 300],
-  ];
 
   const [data, setData] = useState(
     [
-      ["Year", ""]
+      ["", "", "", ""],
+      [0, 0, 0, 0]
     ]
   )
   
   const options = {
+    
     chart: {
-      title: "Статистика встречаемости терминов"
-      // subtitle: "Sales, Expenses, and Profit: 2014-2017",
-    },
-    colors: ['#34529e', '#a62626', '#99ad9c']
+      vAxis: { title: "Weight"},
+      title: "Статистика встречаемости терминов",
+      subtitle: "Топ 10 наболее часто встречающихся терминов по годам"
+    }
   };
 
   
@@ -46,6 +40,7 @@ const ListOfTerms = () => {
   // состояние для query параметров GET запроса /statistics
   const [limit, setLimit] = useState(9)
 
+  const [err, setErr] = useState([style.selectYearUsual])
   async function calcStat() {
     // функция для вызова методов по выделению терминов и расчете статистики
 
@@ -80,7 +75,9 @@ const ListOfTerms = () => {
     }
   }
 
-  async function getStat(limit) {
+  async function getStat(limit, year) {
+    //функция для вызова метода по получению статистики
+
     setStatLoading(true) //запустить компонент загрузки данных
     try {
       // вызвать метод GET /statistics
@@ -89,12 +86,38 @@ const ListOfTerms = () => {
           'ngrok-skip-browser-warning': true
         },
         params: {
-          limit: limit
+          limit: limit,
+          year: year
         }
       }
       );
+
+      // распарсить данные, преобразовать в формат для вывода на график (перевести в список массивов)
+      let data_chart = [ 
+        [],
+        []
+      ]
+
+      if (responseGetStat.data.data.length !== 0) {
+        data_chart[0].push("Год")
+        data_chart[1].push(responseGetStat.data.data[0]['year'])
+        for (let i = 0; i < responseGetStat.data.data.length; i++) {
+          if (i < 10) {
+            data_chart[0].push(responseGetStat.data.data[i]['termName'])
+            data_chart[1].push(responseGetStat.data.data[i]['numOfAppearance'])
+          }
+          
+        }
+
+        setData(data_chart)
+        // console.log(data)
+    }
+      else setData([
+        ["Нет даных", ""]
+      ])
+
       setStatLoading(false) //убрать компонент загрузки данных
-      console.log(responseGetStat.data.data)
+      // console.log(responseGetStat.data.data)
       return responseGetStat.data.data;
     }
     catch {
@@ -111,20 +134,40 @@ const ListOfTerms = () => {
   }
 
   function showStat() {
-    getStat(limit)
+    if (document.getElementById('city-select').value !== "") {
+    setErr([style.selectYearUsual])
+    getStat(limit, document.getElementById('city-select').value)
+    }
+    else {
+      setErr([style.selectYearUsual, style.selectYearErr])
+    }
+    
+    
+  }
+
+//  список годов для селекта
+  const dateList = []
+  for (let i = 1900; i < 2100; i++) {
+    dateList.push(i);
   }
 
   return (
     <div>
       <div className={style.elems}>
-        <Myinput style={{ marginTop: "15px"}} placeholder={"Введите название термина"} type={'text'}/>
-        <NewButton style={{
-          marginRight: "100px", marginLeft: "10px",
-          borderRadius: "5px", fontSize: "14px", padding: "5px", paddingLeft: "15px", paddingRight: "15px", marginTop: "12px"
-          }} 
+        {/* <Myinput style={{ marginTop: "15px"}} placeholder={"Введите название термина"} type={'text'}/> */}
+        
+        {/* компонент для выбора года */}
+        <select className={err.join(' ')} name="city" id="city-select">
+          <option value="">-- Выберите год --</option>
+          {dateList.map(p =>
+          <option key={p}>{p}</option>
+          )}
+        </select>
+
+        <NewButton
           class_new={'listTerms'}
           onClick={showStat}>
-          обновить данные
+          Отобразить данные
           </NewButton>
 
         <NewButton class_new={'listTerms'} onClick={calcStat}>Рассчитать статистику</NewButton>
@@ -134,9 +177,9 @@ const ListOfTerms = () => {
             chartType="Bar"
             width="800px"
             height="400px"
-            data={data_1}
+            data={data}
             options={options}
-        />
+      />
       {
         isStatLoading
         ?
