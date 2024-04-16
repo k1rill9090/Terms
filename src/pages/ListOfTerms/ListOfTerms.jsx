@@ -173,25 +173,26 @@ const ListOfTerms = () => {
         <NewButton class_new={'listTerms'} onClick={calcStat}>Рассчитать статистику</NewButton>
       </div>
       <div>
-      <Chart
-            chartType="Bar"
-            width="800px"
-            height="400px"
-            data={data}
-            options={options}
-      />
-      {
-        isStatLoading
-        ?
-        <ModalLoader visible={setStatLoading} setVisible={setStatLoading}>
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Loader msgText={parse("Подождите, идет выделение терминов <br /> и расчет статистики")}/>
-        </div>
-        </ModalLoader>
-        :
-        <div></div>
+        <Chart
+              chartType="Bar"
+              width="800px"
+              height="400px"
+              data={data}
+              options={options}
+        />
+        {
+          isStatLoading
+          ?
+          <ModalLoader visible={setStatLoading} setVisible={setStatLoading}>
+          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <Loader msgText={parse("Подождите, идет выделение терминов <br /> и расчет статистики")}/>
+          </div>
+          </ModalLoader>
+          :
+          <div></div>
 
-      }
+        }
+        
       </div>
       <ErrNotification visible={note} setVisible={setNote} msgText='Не удалось загрузить данные'/>
       <AccessNotification  visible={noteAccess} setVisible={setNoteAccess} msgText='Статистика по терминам рассчитана!'/>

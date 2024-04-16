@@ -12,7 +12,7 @@ import AccessNotification from '../UI/AccessNotification/AccessNotification';
 
 function Header() {
 
-  const def_pages = {articles: false, listTerms: false, form: false, about: false} 
+  const def_pages = {articles: false, listTerms: false, synonyms: false, form: false, about: false} 
   const currentPage = window.location.href.split('/') //определить текущий роут для выделения кнопки в хедере
 
   // логика для выделения активной страницы в хедере (выделение соответствующей кнопки)
@@ -95,6 +95,10 @@ function Header() {
             <NewButton id='listTerms' to='/listTerms' onClick={handleClick}>список терминов</NewButton>
             </div>
 
+            <div className={active.synonyms ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
+            <NewButton id='synonyms' to='/synonyms' onClick={handleClick}>термины и синонимы</NewButton>
+            </div>
+
             <div className={active.form ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
             <NewButton id='form' to='/form' onClick={handleClick}>
               Загрузить статьи
@@ -104,7 +108,7 @@ function Header() {
             <button className={styles.clearBtn} onClick={clearDb}>Очистить данные</button>
         </div>
 
-        <div style={{marginRight: '15%'}} className={active.about ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
+        <div  className={active.about ? styles.totalBtn+' '+ styles.active : styles.totalBtn}>
           <NewButton id='about' to='/about' onClick={handleClick}>
             О сайте
           </NewButton>

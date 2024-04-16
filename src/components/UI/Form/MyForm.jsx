@@ -196,13 +196,13 @@ const MyForm = ({getNumPage}) => {
       
       setModal(true)
       try {
-        const resp = await axios.post(backend_url+'/articles', {
-          data: {
-            num: num,
-            words: words,
-            min_date: min_date,
-            max_date: max_date
-          }
+        const resp = await axios.post(backend_url+'/articles',
+        {
+        count_articles: num,
+        keywords: words,
+        start_date: min_date,
+        end_date: max_date
+          
         }, {headers: {'ngrok-skip-browser-warning': true}})
 
         
