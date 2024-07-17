@@ -7,6 +7,7 @@ import { getFirstLastPages, getPageCount, getPagesArray } from '../../../additio
 import { backend_url } from '../../../index.js';
 import Loader from '../../UI/Loader/Loader.jsx';
 import ErrNotification from '../../UI/ErrNotification/ErrNotification.jsx';
+import Dropdown from '../../Dropdown/Dropdown.jsx';
 // import NewButton from '../NewButton';
 
 
@@ -24,6 +25,7 @@ const ArtMain = () => {
   const [offset, setOffset] = useState(0)
   const [isPostsLoading, setPostsLoading] = useState(false)
   const [note, setNote] = useState(false) // cостояние для уведомления с ошибкой
+  const [terms, setTerms] = useState({})
 
 // хук useEffect позволяет выполнять различные действия во время работы компонента
 // В данном случае он вызывает api для получения списка статей при начале работы компонента (т.е. при загрузке страницы)
@@ -46,6 +48,18 @@ const ArtMain = () => {
         }
       }
       );
+
+      const response_terms = await axios.get(backend_url+'/terms', {
+        headers: {
+          'ngrok-skip-browser-warning': true
+        },
+        params: {
+          id_art: response.data.data[0].id
+        }
+      }
+      );
+      setTerms(response_terms.data)
+      // console.log(terms)
       // console.log("Статус: "+response)
       setPostsLoading(false);
       
@@ -104,6 +118,11 @@ const ArtMain = () => {
               <Title title={title.title} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
               <br /><br />  
               <Article article={article.article} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
+
+              <div className={styles.dropdown}>
+                <Dropdown terms={terms}/>
+              </div>
+              
 
               <div className={styles.page__wrapper}>
 
