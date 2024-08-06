@@ -54,7 +54,8 @@ const ArtMain = () => {
           'ngrok-skip-browser-warning': true
         },
         params: {
-          id_art: response.data.data[0].id
+          id_art: response.data.data[0].id,
+          limit: 1000
         }
       }
       );
