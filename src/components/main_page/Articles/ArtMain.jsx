@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import styles from './ArtMain.module.css'
 import Title from './Title'
 import axios from 'axios';
@@ -8,8 +8,9 @@ import { backend_url } from '../../../index.js';
 import Loader from '../../UI/Loader/Loader.jsx';
 import ErrNotification from '../../UI/ErrNotification/ErrNotification.jsx';
 import Dropdown from '../../Dropdown/Dropdown.jsx';
+import ListOfTitles from '../../ListOfTitles/ListOfTitles.jsx';
 // import NewButton from '../NewButton';
-
+export const Context = createContext(null) //контекст для списка с заголовками статей
 
 
 
@@ -26,7 +27,8 @@ const ArtMain = () => {
   const [isPostsLoading, setPostsLoading] = useState(false)
   const [note, setNote] = useState(false) // cостояние для уведомления с ошибкой
   const [terms, setTerms] = useState({})
-
+  const [flagTable, setFlagTable] = useState(false) //состояние для списка с заголовками статей
+  const [dataTitles, setDataTitles] = useState({term: '', data: {}})
 // хук useEffect позволяет выполнять различные действия во время работы компонента
 // В данном случае он вызывает api для получения списка статей при начале работы компонента (т.е. при загрузке страницы)
   useEffect( () => {
@@ -114,70 +116,82 @@ const ArtMain = () => {
               <span>Нет данных</span>
             </div>
             :
-            <div>
-            
-              <Title title={title.title} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
-              <br /><br />  
-              <Article article={article.article} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
-
-              <div className={styles.dropdown}>
-                <Dropdown terms={terms}/>
-              </div>
+            <Context.Provider value={{dataTitles, setDataTitles, setFlagTable}}>
+              <div>
               
+                <Title title={title.title} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
+                <br /><br />  
+                <Article article={article.article} className={styles.pos} style={{paddingTop: '3%', paddingLeft: '30%', paddingRight: '30%'}}/>
 
-              <div className={styles.page__wrapper}>
+                <div className={styles.dropdown}>
+                  
+                    <Dropdown terms={terms}/>
+                  
+                </div>
 
-                {/* если страниц больше 5, то отображать в пагинации кнопку в начало, иначе нет */}
-                {pagesArray.length > 5 
+                <div style={{justifyContent: 'center', display: 'flex'}}>
+                {flagTable && (
+                  <div>
+                    <ListOfTitles/>
+                  </div>
+                )}
                 
+                </div>
+
+                <div className={styles.page__wrapper}>
+
+                  {/* если страниц больше 5, то отображать в пагинации кнопку в начало, иначе нет */}
+                  {pagesArray.length > 5 
+                  
+                    ?
+                    <span className={styles.page} 
+                          onClick={() => changePage(firstLastPages[0] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
+                      >
+                      {'В начало'}
+                    </span>
+                    :
+                    <div />
+                  }
+                  
+
+                  {pagesArray[0] !== firstLastPages[0]
+                  ? 
+                  <span style={{padding: '10px'}}>{'...'}</span>
+                  :
+                  <span></span>
+                  }
+                  
+
+                  {pagesArray.map(p =>
+                  <span className={offset + 1 === p ? styles.page__current : styles.page}
+                    onClick={() => changePage(p-1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
+                    key={p}>{p}
+                  </span>
+                  )}
+
+                  {pagesArray[pagesArray.length - 1] !== firstLastPages[1]
+                  ? 
+                  <span style={{padding: '10px'}}>{'...'}</span>
+                  :
+                  <span></span>
+                  }
+                  
+                  {/* если страниц больше 5, то отображать в пагинации кнопку в конец, иначе нет */}
+                  {pagesArray.length > 5 
+                  
                   ?
-                  <span className={styles.page} 
-                        onClick={() => changePage(firstLastPages[0] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
-                    >
-                    {'В начало'}
+                  <span className={styles.page}
+                      onClick={() => changePage(firstLastPages[1] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
+                  >
+                  {'В конец'}
                   </span>
                   :
                   <div />
-                }
-                
-
-                {pagesArray[0] !== firstLastPages[0]
-                ? 
-                <span style={{padding: '10px'}}>{'...'}</span>
-                :
-                <span></span>
-                }
-                
-
-                {pagesArray.map(p =>
-                <span className={offset + 1 === p ? styles.page__current : styles.page}
-                  onClick={() => changePage(p-1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
-                  key={p}>{p}
-                </span>
-                )}
-
-                {pagesArray[pagesArray.length - 1] !== firstLastPages[1]
-                ? 
-                <span style={{padding: '10px'}}>{'...'}</span>
-                :
-                <span></span>
-                }
-                
-                {/* если страниц больше 5, то отображать в пагинации кнопку в конец, иначе нет */}
-                {pagesArray.length > 5 
-                
-                ?
-                <span className={styles.page}
-                    onClick={() => changePage(firstLastPages[1] - 1)} //p-1 из-за того, что offset начинается с нуля, а нумерация страниц с 1
-                >
-                {'В конец'}
-                </span>
-                :
-                <div />
-                }
-      
+                  }
+        
+                </div>
               </div>
-            </div>
+            </Context.Provider>
             }
           </div>
         }

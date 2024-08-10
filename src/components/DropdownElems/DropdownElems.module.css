@@ -1,0 +1,13 @@
+.liButton {
+    padding: 8px 12px;
+ }
+.elems {
+    border: 1px solid black;
+    cursor: pointer;
+    padding: 10px;
+    background-color: rgb(213, 213, 213);
+    font-size: 12px;
+}
+.elems:hover {
+    background-color: rgb(229, 229, 229);
+}
