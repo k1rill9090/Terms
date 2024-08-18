@@ -138,7 +138,7 @@ const ArtMain = () => {
         });
         idStr = idStr.join('&')
         // idStr.push(...setId)
-        console.log(idStr)
+        // console.log(idStr)
         
 
         if (response.data.length !== 0) {
