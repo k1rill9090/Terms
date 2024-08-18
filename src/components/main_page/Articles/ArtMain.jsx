@@ -1,4 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import styles from './ArtMain.module.css'
 import Title from './Title'
 import axios from 'axios';
@@ -9,6 +10,7 @@ import Loader from '../../UI/Loader/Loader.jsx';
 import ErrNotification from '../../UI/ErrNotification/ErrNotification.jsx';
 import Dropdown from '../../Dropdown/Dropdown.jsx';
 import ListOfTitles from '../../ListOfTitles/ListOfTitles.jsx';
+import ModalLoader from '../../UI/ModalLoader/ModalLoader.jsx';
 // import NewButton from '../NewButton';
 export const Context = createContext(null) //контекст для списка с заголовками статей
 
@@ -29,6 +31,11 @@ const ArtMain = () => {
   const [terms, setTerms] = useState({})
   const [flagTable, setFlagTable] = useState(false) //состояние для списка с заголовками статей
   const [dataTitles, setDataTitles] = useState({term: '', data: {}})
+  const [input, setInput] = useState('')
+
+    // состояние для модалки
+    const [modal, setModal] = useState(false)
+
 // хук useEffect позволяет выполнять различные действия во время работы компонента
 // В данном случае он вызывает api для получения списка статей при начале работы компонента (т.е. при загрузке страницы)
   useEffect( () => {
@@ -36,8 +43,9 @@ const ArtMain = () => {
     getArticles(limit, offset)
   }, []) //пустой массив нужен чтобы вызов функции происходил только один раз, при запуске страницы, иначе функция будет выполняться бесконечно
 
+  const navigate = useNavigate()
 
-  async function getArticles(limit, offset = 0) {
+  async function getArticles(limit, offset = 0, id) {
     setPostsLoading(true);
     try {
       const response = await axios.get(backend_url+'/articles', {
@@ -46,7 +54,8 @@ const ArtMain = () => {
         },
         params: {
           limit: limit,
-          offset: offset
+          offset: offset,
+          id: id
         }
       }
       );
@@ -69,6 +78,7 @@ const ArtMain = () => {
       setTitle(response.data.data[0])
       setArticle(response.data.data[0])
       setTotalArt(response.data.meta.total_count)
+      navigate(`/articles/${response.data.data[0].id}`)
     }
     catch (error) {
       // console.log('Ошибка: ', error.message);
@@ -88,15 +98,82 @@ const ArtMain = () => {
   getPagesArray(pagesArray, pagesCount, offset)
   // console.log(pagesArray)
 
-  const changePage = (page) => {
-    getArticles(limit, page);
+  const changePage = (page, id) => {
+    getArticles(limit, page, id);
     setOffset(page)
   }
 
 
+  async function actions() {
+    // chooseTerm(chosenTerm)
+
+    try {
+      setModal(true);
+        const response = await axios.get(backend_url+'/terms', {
+          headers: {
+            'ngrok-skip-browser-warning': true
+          },
+          params: {
+            limit: 10000,
+            term_name: input
+          }
+        }
+        );
+        
+        let idStr = ''
+        response.data.forEach(elem => {
+          idStr = idStr+'id='+elem.id_art+'&'
+        });
+        if (response.data.length !== 0) {
+          
+        const response_arts = await axios.get(backend_url+`/articles?limit=1000&${idStr}`, {
+          headers: {
+            'ngrok-skip-browser-warning': true
+          }
+        }
+        );
+        // console.log(response_arts.data.data)
+        setDataTitles({term: input, data: response_arts.data.data})
+        setFlagTable(true);
+        // console.log({term: chosenTerm, data: response.data})
+        setModal(false)
+        // setTimeout(() => {
+        //   setModal(false)
+        // }, 1000);
+        window.scrollTo(0, document.body.scrollHeight);
+      } 
+      else {
+        setDataTitles({term: input, data: []})
+        // console.log(dataTitles)
+        setFlagTable(true);
+        setModal(false)
+        window.scrollTo(0, document.body.scrollHeight);
+      } 
+      }
+      
+      catch (error) {
+        // console.log('Ошибка: ', error.message);
+        setNote(true);
+        setTimeout(() => {
+          setNote(false)
+        }, 5000);
+      }
+}
+  
 
   return (
     <div className={styles.main} style={{marginBottom: '5%'}}>
+    <ModalLoader visible={modal} setVisible={setModal}>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <Loader msgText='Подождите, идет загрузка'/>
+        </div>
+      </ModalLoader>
+
+    <div style={{marginLeft: '40%', marginTop: '20px', display: 'flex', gap: '10px'}}>
+      <input placeholder='Укажите название термина' style={{width: '300px'}} onChange={(e) => setInput(e.target.value)}></input>
+      <button style={{border: '1px solid black', padding: '5px'}} onClick={() => actions()}>найти</button>
+    </div>
+
         <div className={styles.pos}>
             <span className={styles.elems} style={{fontSize: '20px', marginTop: '1.5%', marginBottom: '1.5%'}}>Список статей</span>
         </div>
@@ -132,7 +209,7 @@ const ArtMain = () => {
                 <div style={{justifyContent: 'center', display: 'flex'}}>
                 {flagTable && (
                   <div>
-                    <ListOfTitles/>
+                    <ListOfTitles getArts={changePage}/>
                   </div>
                 )}
                 

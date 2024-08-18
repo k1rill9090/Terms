@@ -17,11 +17,11 @@ function App() {
       <Header />
       <Routes>
         <Route path='/about' element={<About/>}/>
-        <Route path='/articles' element={<Articles currentUrl={window.location.href}/>}/>
+        <Route path='/articles/:id' element={<Articles currentUrl={window.location.href}/>}/>
         <Route path='/listTerms' element={<div className={'barChart'}><ListOfTerms /></div>}/>
         <Route path='/synonyms' element={<Synonyms />}/>
         <Route path='/form' element={<FormGeneral />}/>
-        <Route path="*" element={<Navigate to="/articles" replace />} />
+        <Route path="*" element={<Navigate to="/articles/:id" replace />} />
       </Routes>
     </BrowserRouter>
   );
