@@ -120,10 +120,27 @@ const ArtMain = () => {
         }
         );
         
-        let idStr = ''
+        // let idStr = ''
+        // response.data.forEach(elem => {
+        //   idStr = idStr+'id='+elem.id_art+'&'
+        // });
+
+        // код ниже удаляет дубли id-шников
+        let idStr = []
         response.data.forEach(elem => {
-          idStr = idStr+'id='+elem.id_art+'&'
+          idStr.push(elem.id_art)
         });
+        let setId = new Set(idStr)
+        idStr.length=0
+
+        setId.forEach(elem => {
+          idStr.push(`id=${elem}`)
+        });
+        idStr = idStr.join('&')
+        // idStr.push(...setId)
+        console.log(idStr)
+        
+
         if (response.data.length !== 0) {
           
         const response_arts = await axios.get(backend_url+`/articles?limit=100000&${idStr}`, {
@@ -137,9 +154,6 @@ const ArtMain = () => {
         setFlagTable(true);
         // console.log({term: chosenTerm, data: response.data})
         setModal(false)
-        // setTimeout(() => {
-        //   setModal(false)
-        // }, 1000);
         window.scrollTo(0, document.body.scrollHeight);
       } 
       else {
