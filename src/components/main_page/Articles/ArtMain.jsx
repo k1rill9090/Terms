@@ -114,7 +114,7 @@ const ArtMain = () => {
             'ngrok-skip-browser-warning': true
           },
           params: {
-            limit: 10000,
+            limit: 200000,
             term_name: input
           }
         }
@@ -126,7 +126,7 @@ const ArtMain = () => {
         });
         if (response.data.length !== 0) {
           
-        const response_arts = await axios.get(backend_url+`/articles?limit=1000&${idStr}`, {
+        const response_arts = await axios.get(backend_url+`/articles?limit=100000&${idStr}`, {
           headers: {
             'ngrok-skip-browser-warning': true
           }
